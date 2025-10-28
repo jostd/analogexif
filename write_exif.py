@@ -4,7 +4,8 @@ Created on Fri Aug 22 13:27:52 2025
 
 @author: jost
 """
-import os, sys
+import os
+import sys
 import json
 import copy
 
@@ -162,7 +163,8 @@ class ParentApp(tk.Tk):
     self.exif_info.config(state=tk.DISABLED)
     write_enable = False
     for im in self.film_images:
-      if im.modified: write_enable = True
+      if im.modified: 
+        write_enable = True
     if write_enable:
       self.write_button.config(state=tk.ACTIVE)
     else:
@@ -180,9 +182,9 @@ class ParentApp(tk.Tk):
     self.update_image()
   
   def prev_image(self):
-  	#global current_index
-  	self.current_index = (self.current_index - 1) % len(self.film_images)
-  	self.update_image()
+    #global current_index
+    self.current_index = (self.current_index - 1) % len(self.film_images)
+    self.update_image()
    
   def on_image_gps_mode_change(self, mode):
     #global image_map_mode
@@ -272,7 +274,8 @@ class ParentApp(tk.Tk):
       self.update_idletasks()
       self.log_entries = process_logbook(self.log_folder)
       self.config(cursor='')
-      if len(self.log_entries) == 0: return
+      if len(self.log_entries) == 0: 
+        return
       self.left_button2 = tk.Button(self.log_navigation, text='<', command=self.prev_image2)#, anchor=tk.W)
       self.left_button2.grid(column=0, row=1, ipadx=5, ipady=5)
       self.log_thumb = tk.Label(self.log_navigation, image=self.log_entries[0].tk_image)
@@ -347,7 +350,8 @@ class ParentApp(tk.Tk):
       self.film_images
       images_modified = False
       for im in self.film_images:
-        if im.modified: images_modified = True
+        if im.modified: 
+          images_modified = True
       if images_modified:
         if messagebox.askokcancel("Quit", 
             "There are modified images. Are you sure you want to quit?"):
@@ -360,7 +364,8 @@ class ParentApp(tk.Tk):
             log.im.close()
             del log
           self.destroy()
-        else: return
+        else: 
+          return
       else:
         print('Cleaning up images')
         for im in self.film_images:

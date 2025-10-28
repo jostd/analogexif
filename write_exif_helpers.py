@@ -4,7 +4,8 @@ Created on Mon Aug 25 09:56:48 2025
 
 @author: jost
 """
-import piexif, piexif.helper
+import piexif
+import piexif.helper
 #from datetime import datetime as dt
 import os#, sys
 import time
@@ -13,7 +14,9 @@ from tkinter import simpledialog
 from tkintermapview import TkinterMapView
 from urllib.parse import quote_plus
 import requests
-
+  
+from PIL import Image, ImageTk
+import io# , sys
 
 class exif_class:
   def __init__(self):
@@ -46,9 +49,6 @@ class exif_class:
     num = Fraction(r).limit_denominator(100000).numerator
     nom = Fraction(r).limit_denominator(100000).denominator
     return (num, nom)
-  
-from PIL import Image, ImageTk
-import io# , sys
 
 class aimage:
 
@@ -157,8 +157,10 @@ class aimage:
       lat_deg = d1/d2 + (m1/m2)/60.0 + (s1/s2)/3600.0
       (d1,d2),(m1,m2),(s1,s2) = self.exif_dict["GPS"][piexif.GPSIFD.GPSLongitude]
       lng_deg = d1/d2 + (m1/m2)/60.0 + (s1/s2)/3600.0
-      if lat_ref[0] == 'S': lat_deg = -lat_deg
-      if lng_ref[0] == 'W': lng_deg = -lng_deg
+      if lat_ref[0] == 'S':
+        lat_deg = -lat_deg
+      if lng_ref[0] == 'W': 
+        lng_deg = -lng_deg
       self.exif.latitude = lat_deg
       self.exif.longitude = lng_deg
       #print(f'GPS from exif: {lat_deg} {lng_deg}')
@@ -307,10 +309,14 @@ def process_logbook(log_folder):
       M = int(s[s.find("deg")+4:s.find("'")])
       S = float(s[s.find("'")+2:s.find("\"")])
       p = 1
-      if s.find("N")>0: p = 1
-      if s.find("S")>0: p = -1
-      if s.find("W")>0: p = -1
-      if s.find("E")>0: p = 1
+      if s.find("N")>0: 
+        p = 1
+      if s.find("S")>0: 
+        p = -1
+      if s.find("W")>0: 
+        p = -1
+      if s.find("E")>0: 
+        p = 1
       #print(f's = {s} and angle is {p*(D + M/60.0 + S/3600.0)}')
       return p*(D + M/60.0 + S/3600.0)
     longitude_s = log_entry['GPSLongitude']
@@ -604,7 +610,7 @@ class mymap(tk.Frame):
     self.grid_propagate(True)
     self.latitude = 32.7
     self.longitude = -117.05
-    if gps_changed_callback != None:
+    if gps_changed_callback is not None:
       self.gps_changed_callback = gps_changed_callback
     #self.top = parent
     self.map_widget = TkinterMapView(self)#, width=300, height=300)
@@ -619,7 +625,7 @@ class mymap(tk.Frame):
     #map_widget.delete_all_marker()
     self.map_widget.set_marker(self.latitude, self.longitude, \
                           text=f"{round(self.longitude,5)} {round(self.latitude,5)}")
-    if gps_changed_callback != None:
+    if gps_changed_callback is not None:
       self.map_widget.canvas.bind("<Double-Button-1>", self.on_double_click)
       label_hint = tk.Label(self, text='double click on map to redifine marker')
       label_hint.grid(column=0, row=1)
